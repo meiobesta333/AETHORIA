@@ -11,7 +11,8 @@ const setStatus=(id,msg)=>{const el=status(id);if(el)el.textContent=msg;};
 const positiveMod=(n,m)=>((n%m)+m)%m;
 function terrainAt(x,y){
  const v=positiveMod(x*17+y*29+x*y*3,31);
- if([2,9,21].includes(v)||v===14)return 'tree';
+ if([2,9,21].includes(v))return 'tree';
+ if(v===14)return 'rock';
  const path=positiveMod(x*3+y*5+Math.floor(Math.sin(x/8)*5),37)<3;
  if(path)return 'path';
  const patch=positiveMod(x*11+y*7+x*y,97);
