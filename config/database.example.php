@@ -11,6 +11,6 @@ return [
     'host' => 'sql302.infinityfree.com',
     'database' => 'if0_43541829_aethoria',
     'username' => 'if0_43541829',
-    'password' => 'COLOQUE_SUA_SENHA_AQUI',
+    'password' => 'r1MbP8PCIlgI',
     'charset' => 'utf8mb4',
 ];
