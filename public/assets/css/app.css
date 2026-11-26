@@ -80,3 +80,30 @@ footer{text-align:center;border-top:1px solid #c4b17a22;padding:29px;color:#8491
 .creature-list{display:flex;flex-wrap:wrap;gap:9px}
 .creature-button{padding:10px 13px;background:#19291f;border:1px solid #465d48;color:#dce7d8;border-radius:3px;cursor:pointer;font:12px 'DM Sans',sans-serif}
 .creature-button:disabled{opacity:.55;cursor:default}
+
+
+
+/* AETHORIA — interface de exploração */
+.game-head{padding:18px 22px;margin-bottom:18px;background:linear-gradient(110deg,#17281d,#0e1913 70%);border:1px solid #526748;box-shadow:0 12px 34px #0005}
+.game-head h1{font-size:clamp(28px,4vw,42px);letter-spacing:1px}
+.game-head p{margin:7px 0 0}
+.game-head>a{padding:11px 15px;border:1px solid #8c784c;color:#e5d5ad;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.stage{overflow:hidden;border:1px solid #8a805b;background:#08120c;box-shadow:0 20px 55px #0008}
+.stage canvas{width:100%;height:auto;display:block;image-rendering:pixelated}
+.overlay{background:#0a150f;border-top:1px solid #536548;color:#b8c5a8;font-size:10px;letter-spacing:1.5px;padding:13px 16px}
+.game-controls{margin:20px auto 10px;gap:6px}
+.game-controls button{width:52px;height:45px;border:1px solid #71805c;background:linear-gradient(145deg,#243b29,#132219);color:#eadfbe;font-size:17px;box-shadow:inset 0 1px #ffffff14,0 4px 10px #0005}
+.game-controls button:hover{background:#3b5b3d;border-color:#c2a66b}
+.game-controls button:active{transform:translateY(1px);background:#60794b}
+.save-status{padding:8px 12px;color:#b8c99c;font-size:11px;letter-spacing:.5px}
+.encounters{padding:24px;background:linear-gradient(145deg,#17271d,#0e1913);border:1px solid #455a43;box-shadow:0 12px 35px #0004}
+.encounters h2{font-size:19px;letter-spacing:.5px}
+.creature-list{gap:10px}
+.creature-button{padding:11px 15px;background:linear-gradient(145deg,#263b2a,#17251b);border:1px solid #526a4c;color:#e1e8d7;transition:background .2s,border-color .2s,transform .2s}
+.creature-button:hover:not(:disabled){background:#344e35;border-color:#b49b64;transform:translateY(-1px)}
+.npc-button{background:linear-gradient(145deg,#3a3320,#201d14);border-color:#8c784c;color:#ead8a9}
+.npc-button:hover:not(:disabled){background:#51452a;border-color:#d4b879}
+.stats{gap:14px}
+.stats div{background:linear-gradient(145deg,#1c3022,#101b15);border-color:#53664a;padding:18px}
+.stats strong{font:600 17px Cinzel;color:#e8dfc7}
+@media(max-width:760px){.wrap{margin:30px auto 55px}.game-head{padding:16px;flex-wrap:wrap}.stage canvas{width:100%}.encounters{padding:16px}.stats{grid-template-columns:1fr}.game-controls button{width:48px;height:43px}}
