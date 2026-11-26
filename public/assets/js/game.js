@@ -3,7 +3,10 @@
 const canvas=document.getElementById('world');if(!canvas)return;
 const ctx=canvas.getContext('2d'),cfg=window.AETHORIA_WORLD||{};
 const W=18,H=15,S=32,OX=192,OY=56;
-let player={x:Number(cfg.x??8),y:Number(cfg.y??8)},saving=false,queued=false;\nlet walkUntil=0,lastStep=0,animationFrame=0;\nlet facing='down';
+let player={x:Number(cfg.x??8),y:Number(cfg.y??8)},saving=false,queued=false;
+let walkUntil=0,animationFrame=0;
+let walkUntil=0,lastStep=0,animationFrame=0;
+let facing='down';
 const creatures=(cfg.creatures||[]).map(e=>({...e})),npcs=cfg.npcs||[];
 const key=(x,y)=>x+','+y,blocked=new Set(),trees=[],rocks=[],grass=[];
 for(let y=0;y<H;y++)for(let x=0;x<W;x++){
@@ -26,13 +29,13 @@ function tile(x,y,type){
  if((x+y)%4===0)rect(px(x)+14,py(y)+12,2,2,'#c0b77a55');
 }
 function tree(o){
- const x=px(o.x),y=py(o.y);
+ const x=px(o.x),y=py(o.y),sway=Math.sin(animationFrame/850+o.x*1.7+o.y)*1.2;
  // copa vista de cima, tronco visível no limite inferior
  rect(x+13,y+18,7,13,'#60452c');rect(x+15,y+20,2,9,'#98714a');
- rect(x+4,y+3,24,22,'#203f2b');rect(x+2,y+5,28,17,'#2d5938');
- rect(x+6,y+1,20,23,'#376a42');rect(x+9,y+4,14,15,'#477b4b');
- rect(x+7,y+5,5,4,'#5c8c55');rect(x+19,y+8,5,4,'#285437');
- rect(x+11,y+15,4,3,'#6b9554');rect(x+22,y+16,3,3,'#315e3b');
+ rect(x+4+sway,y+3,24,22,'#203f2b');rect(x+2+sway,y+5,28,17,'#2d5938');
+ rect(x+6+sway,y+1,20,23,'#376a42');rect(x+9+sway,y+4,14,15,'#477b4b');
+ rect(x+7+sway,y+5,5,4,'#5c8c55');rect(x+19+sway,y+8,5,4,'#285437');
+ rect(x+11+sway,y+15,4,3,'#6b9554');rect(x+22+sway,y+16,3,3,'#315e3b');
 }
 function rock(o){
  const x=px(o.x),y=py(o.y);
@@ -46,26 +49,27 @@ function label(t,x,y){
  ctx.fillStyle='#eee8d1';ctx.fillText(t,x,y-3);
 }
 function spritePlayer(x,y){
- // sombra, botas, pernas, túnica, braços, cabeça e elmo
+ const moving=performance.now()<walkUntil,step=moving?Math.sin(performance.now()/75)*3:0,bob=moving?Math.abs(Math.sin(performance.now()/75))*1.5:Math.sin(performance.now()/420)*.6;
  rect(x+8,y+25,17,4,'#18201899');
- rect(x+10,y+23,5,6,'#49352a');rect(x+19,y+23,5,6,'#49352a');
- rect(x+10,y+14,14,11,'#8e633c');rect(x+8,y+13,18,10,'#a77a43');
- rect(x+6,y+14,5,9,'#b18b55');rect(x+24,y+14,5,9,'#b18b55');
- rect(x+11,y+5,12,10,'#d8c19a');rect(x+9,y+3,16,5,'#77704a');
- rect(x+12,y+1,10,4,'#b49a60');rect(x+14,y+8,2,2,'#30291e');rect(x+19,y+8,2,2,'#30291e');
- rect(x+15,y+15,4,8,'#e0c27d');rect(x+26,y+11,2,12,'#b7a16d');
+ rect(x+10-step,y+22+Math.max(0,step),5,6,'#49352a');rect(x+19+step,y+22+Math.max(0,-step),5,6,'#49352a');
+ rect(x+10,y+14-bob,14,11,'#8e633c');rect(x+8,y+13-bob,18,10,'#a77a43');
+ rect(x+6-step,y+14-bob,5,9,'#b18b55');rect(x+24+step,y+14-bob,5,9,'#b18b55');
+ rect(x+11,y+5-bob,12,10,'#d8c19a');rect(x+9,y+3-bob,16,5,'#77704a');
+ rect(x+12,y+1-bob,10,4,'#b49a60');rect(x+14,y+8-bob,2,2,'#30291e');rect(x+19,y+8-bob,2,2,'#30291e');
+ rect(x+15,y+15-bob,4,8,'#e0c27d');rect(x+26+step,y+11-bob,2,12,'#b7a16d');
 }
 function spriteNpc(n){
- const x=px(Number(n.tile_x)),y=py(Number(n.tile_y));
+ const x=px(Number(n.tile_x)),y=py(Number(n.tile_y)),breathe=Math.sin(performance.now()/520+Number(n.id||0))*1.1;
  rect(x+8,y+25,17,4,'#17201899');
- rect(x+10,y+14,14,11,'#67533b');rect(x+8,y+12,18,12,'#80694b');
- rect(x+11,y+4,12,10,'#c6b38b');rect(x+8,y+2,18,5,'#b39455');
- rect(x+13,y+8,2,2,'#34291d');rect(x+19,y+8,2,2,'#34291d');
+ rect(x+10,y+14-breathe,14,11,'#67533b');rect(x+8,y+12-breathe,18,12,'#80694b');
+ rect(x+11,y+4-breathe,12,10,'#c6b38b');rect(x+8,y+2-breathe,18,5,'#b39455');
+ rect(x+13,y+8-breathe,2,2,'#34291d');rect(x+19,y+8-breathe,2,2,'#34291d');
+ rect(x+12,y+12-breathe,10,5,'#d0d0c0');rect(x+14,y+17-breathe,6,3,'#b8b9a8');
  rect(x+26,y+12,2,15,'#735b39');rect(x+24,y+11,6,3,'#d0b36f');
  label(n.name,x+16,y-1);
 }
 function spriteCreature(e){
- const x=px(Number(e.tile_x)),y=py(Number(e.tile_y)),code=e.code||'';
+ const x=px(Number(e.tile_x)),y=py(Number(e.tile_y)),code=e.code||'',pulse=Math.sin(performance.now()/230+Number(e.id||0))*1.2;
  rect(x+7,y+25,19,4,'#17201899');
  if(code==='wolf_young'){
   rect(x+5,y+11,23,13,'#777d69');rect(x+9,y+7,16,14,'#96977d');
@@ -91,8 +95,10 @@ function render(){
  rect(12,12,936,576,'#101711');rect(16,16,928,568,'#273329');
  // campo de tiles quadrados
  for(let y=0;y<H;y++)for(let x=0;x<W;x++)tile(x,y,((x>=4&&x<=12&&y===8)||(x===8&&y>=5&&y<=10))?'path':'grass');
- // arbustos, pequenas ervas e pedras
- grass.forEach(o=>{const x=px(o.x),y=py(o.y);rect(x+5,y+20,2,4,'#345b37');rect(x+7,y+18,2,3,'#85a45b');});
+ // vegetação baixa animada pelo vento
+ grass.forEach(o=>{const x=px(o.x),y=py(o.y),wind=Math.sin(animationFrame/360+o.x+o.y)*1.5;rect(x+5+wind,y+20,2,4,'#345b37');rect(x+7+wind,y+18,2,3,'#85a45b');});
+ // flores, cogumelos e detalhes naturais
+ for(let i=0;i<22;i++){const gx=(i*7+3)%W,gy=(i*11+2)%H,x=px(gx),y=py(gy);if(i%3===0){rect(x+13,y+18,3,3,'#d7c18a');rect(x+14,y+17,2,2,'#e7d8b5');}else if(i%5===0){rect(x+20,y+18,4,3,'#8d574e');rect(x+21,y+16,2,3,'#c18a70');}}
  rocks.forEach(rock);
  // ordenar objetos por linha para sobreposição natural
  const objects=[...trees.map(o=>({y:o.y,draw:()=>tree(o)})),...npcs.map(o=>({y:Number(o.tile_y),draw:()=>spriteNpc(o)})),...creatures.filter(e=>Number(e.health)>0).map(o=>({y:Number(o.tile_y),draw:()=>spriteCreature(o)})),{y:player.y,draw:()=>spritePlayer(px(player.x),py(player.y))}];
@@ -105,6 +111,8 @@ function render(){
  rect(790,500,145,76,'#101812');ctx.strokeStyle='#7d7957';ctx.strokeRect(790.5,500.5,144,75);
  for(let y=0;y<7;y++)for(let x=0;x<12;x++)rect(798+x*10,508+y*8,9,7,((x*5+y*3)%4===0)?'#3d603e':'#526e48');
  rect(798+(player.x/W)*115,508+(player.y/H)*55,4,4,'#f0d47b');
+ // vaga-lumes com brilho pulsante
+ for(let i=0;i<9;i++){const fx=px((i*5+2)%W)+12+Math.sin(animationFrame/600+i)*7,fy=py((i*3+4)%H)+10+Math.cos(animationFrame/730+i)*5;ctx.globalAlpha=.35+Math.sin(animationFrame/240+i)*.25;rect(fx,fy,2,2,'#f3e7a0');}ctx.globalAlpha=1;
  // rodapé
  rect(20,554,920,23,'#121a14');ctx.fillStyle='#b9c4a9';ctx.font='10px Arial';ctx.textAlign='left';ctx.fillText('WASD / SETAS: MOVER     CLIQUE EM UMA CRIATURA: ATACAR     CLIQUE NO NPC: INTERAGIR',30,569);
 }
@@ -140,5 +148,6 @@ document.querySelectorAll('[data-npc]').forEach(b=>b.addEventListener('click',as
  if(s)s.textContent=(npc.dialogue||'')+' '+d.message;
  }catch(e){if(s)s.textContent=e.message;}
 }));
-render();
+function animate(t){animationFrame=t;render();requestAnimationFrame(animate);}
+requestAnimationFrame(animate);
 })();
