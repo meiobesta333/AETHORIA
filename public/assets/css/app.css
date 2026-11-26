@@ -121,3 +121,6 @@ footer{text-align:center;border-top:1px solid #c4b17a22;padding:29px;color:#8491
 .creature-button{border-radius:0;background:#28372a;border:1px solid #65704e;font-family:Georgia,serif}
 .stats div{border-radius:0;background:#18231b;border:1px solid #596348}
 @media(max-width:760px){.stage canvas{width:100%;height:auto}}
+
+/* Renderização suave para sprites vetoriais e escala responsiva */
+.stage canvas{image-rendering:auto!important;}
