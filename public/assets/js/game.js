@@ -3,7 +3,7 @@
 const canvas=document.getElementById('world');if(!canvas)return;
 const ctx=canvas.getContext('2d'),cfg=window.AETHORIA_WORLD||{};
 const W=18,H=15,S=32,OX=192,OY=56;
-let player={x:Number(cfg.x??8),y:Number(cfg.y??8)},saving=false,queued=false;
+let player={x:Number(cfg.x??8),y:Number(cfg.y??8)},saving=false,queued=false;\nlet walkUntil=0,lastStep=0,animationFrame=0;\nlet facing='down';
 const creatures=(cfg.creatures||[]).map(e=>({...e})),npcs=cfg.npcs||[];
 const key=(x,y)=>x+','+y,blocked=new Set(),trees=[],rocks=[],grass=[];
 for(let y=0;y<H;y++)for(let x=0;x<W;x++){
@@ -78,7 +78,7 @@ function spriteCreature(e){
   rect(x+21,y+5,4,7,'#c0a15b');rect(x+12,y+13,3,3,'#30291e');
   rect(x+20,y+13,3,3,'#30291e');
  }else{
-  rect(x+6,y+11,21,13,'#315a37');rect(x+9,y+6,16,16,'#6d9a59');
+  rect(x+6,y+11-pulse,21,13+pulse,'#315a37');rect(x+9,y+6-pulse,16,16+pulse,'#6d9a59');
   rect(x+11,y+8,4,4,'#a8c57a');rect(x+20,y+8,4,4,'#a8c57a');
   rect(x+12,y+14,3,3,'#172719');rect(x+20,y+14,3,3,'#172719');
  }
@@ -117,7 +117,7 @@ async function persist(){
 function move(dx,dy){
  const nx=player.x+dx,ny=player.y+dy;
  if(nx<0||ny<0||nx>=W||ny>=H||blocked.has(key(nx,ny))||creatures.some(e=>Number(e.health)>0&&Number(e.tile_x)===nx&&Number(e.tile_y)===ny))return;
- player={x:nx,y:ny};render();const s=document.getElementById('save-status');if(s)s.textContent='Salvando posição…';persist();
+ player={x:nx,y:ny};walkUntil=performance.now()+230;lastStep=performance.now();facing=dx<0?'left':dx>0?'right':dy<0?'up':'down';render();const s=document.getElementById('save-status');if(s)s.textContent='Salvando posição…';persist();
 }
 const keys={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]};
 window.addEventListener('keydown',e=>{const d=keys[e.key];if(d){e.preventDefault();move(...d);}});
