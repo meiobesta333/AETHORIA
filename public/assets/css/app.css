@@ -107,3 +107,17 @@ footer{text-align:center;border-top:1px solid #c4b17a22;padding:29px;color:#8491
 .stats div{background:linear-gradient(145deg,#1c3022,#101b15);border-color:#53664a;padding:18px}
 .stats strong{font:600 17px Cinzel;color:#e8dfc7}
 @media(max-width:760px){.wrap{margin:30px auto 55px}.game-head{padding:16px;flex-wrap:wrap}.stage canvas{width:100%}.encounters{padding:16px}.stats{grid-template-columns:1fr}.game-controls button{width:48px;height:43px}}
+
+
+
+/* Direção visual 2D clássica: tiles quadrados e leitura de RPG top-down */
+.stage{border:2px solid #766b4d;background:#101711;box-shadow:0 12px 34px #0008;padding:0}
+.stage canvas{width:100%;height:auto;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+.overlay{font-size:10px;letter-spacing:1px;background:#111912;border-top:1px solid #5a6246;color:#c3c7aa}
+.game-head{background:#151e18;border:1px solid #4b5c43}
+.game-head h1{font-family:Georgia,serif;letter-spacing:0}
+.game-controls button{border-radius:0;background:#273327;border:1px solid #7c7657;box-shadow:inset 1px 1px #ffffff20}
+.encounters{background:#151e18;border:1px solid #596348;border-radius:0}
+.creature-button{border-radius:0;background:#28372a;border:1px solid #65704e;font-family:Georgia,serif}
+.stats div{border-radius:0;background:#18231b;border:1px solid #596348}
+@media(max-width:760px){.stage canvas{width:100%;height:auto}}
