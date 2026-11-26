@@ -9,10 +9,12 @@ MVP de RPG medieval para navegador, iniciado com PHP + MySQL para hospedagem com
 - Cadastro, login e logout com sessões e CSRF.
 - Criação/seleção de personagem e quatro vocações.
 - Persistência MySQL via PDO.
-- Landing page e prévia ilustrativa do mundo.
+- Landing page e mapa isométrico inicial de Elarion em Canvas 2D.
+- Movimento por WASD, setas e controles direcionais na tela.
+- Salvamento autenticado da posição do personagem no MySQL.
 - Documentação inicial de arquitetura, banco, segurança e deploy.
 
-**Ainda não implementado:** Phaser 3, mapa interativo, movimentação validada, combate, criaturas, inventário, quests, mercado e recursos sociais. Não são apresentados como concluídos.
+**Ainda não implementado:** Phaser 3, validação autoritativa de colisões no servidor, multiplayer em tempo real, combate, criaturas, inventário, quests, mercado e recursos sociais. O mapa atual é uma primeira versão procedural em Canvas 2D, não o atlas final de sprites.
 
 ## Instalação
 1. PHP 8.1+ com PDO/pdo_mysql; MySQL/MariaDB com InnoDB.
