@@ -5,7 +5,7 @@ const ctx=canvas.getContext('2d'),cfg=window.AETHORIA_WORLD||{};
 const W=18,H=15,S=32,OX=192,OY=56;
 let player={x:Number(cfg.x??8),y:Number(cfg.y??8)},saving=false,queued=false;
 let walkUntil=0,animationFrame=0;
-let walkUntil=0,lastStep=0,animationFrame=0;
+let lastStep=0;
 let facing='down';
 const creatures=(cfg.creatures||[]).map(e=>({...e})),npcs=cfg.npcs||[];
 const key=(x,y)=>x+','+y,blocked=new Set(),trees=[],rocks=[],grass=[];
