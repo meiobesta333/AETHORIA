@@ -7,12 +7,13 @@
 - Posição carregada e salva em `characters.tile_x/tile_y`.
 - Endpoint de movimento autenticado com CSRF, validação de passo ortogonal, limites, obstáculos e células ocupadas por criaturas.
 - Três criaturas PvE persistidas em `world_creatures`.
+- NPC Ancião Aldren e missão `A ameaça verde`, com aceite, objetivo, conclusão e reivindicação de XP.
 - Ataque adjacente com dano por vocação, transação SQL e recompensa de XP uma única vez ao derrotar a criatura.
 - O estado de vida dos monstros é compartilhado entre jogadores.
 
 ## Atualização do banco
 Para instalação nova, importar `database/schema.sql` e depois `database/seeds/initial.sql`.
-Para banco criado na versão anterior, executar uma vez `database/migrations/2026_11_26_world_creatures.sql`.
+Para banco criado na versão anterior, executar em ordem `database/migrations/2026_11_26_world_creatures.sql` e `database/migrations/2026_11_26_npcs_quests.sql`.
 
 ## Limitações
 - Arte e criaturas são desenhadas proceduralmente; o atlas conceitual ainda não está integrado.
