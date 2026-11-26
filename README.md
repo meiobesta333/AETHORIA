@@ -13,6 +13,8 @@ MVP de RPG medieval para navegador, iniciado com PHP + MySQL para hospedagem com
 - Movimento por WASD, setas e controles direcionais na tela.
 - Salvamento autenticado da posição do personagem no MySQL.
 - Criaturas PvE persistidas no banco e combate adjacente com recompensa de experiência.
+- NPC Ancião Aldren com interação validada por proximidade.
+- Primeira missão PvE persistente: derrotar o Limo Verde e reivindicar 35 XP.
 - Validação de movimento no servidor: passo único, limites, obstáculos e células ocupadas.
 - Documentação inicial de arquitetura, banco, segurança e deploy.
 
@@ -25,6 +27,6 @@ MVP de RPG medieval para navegador, iniciado com PHP + MySQL para hospedagem com
 4. Importe `database/schema.sql` e `database/seeds/initial.sql`.
 5. Configure o document root para `public/` e acesse o site.
 
-Para atualizar um banco criado na versão anterior, execute uma vez `database/migrations/2026_11_26_world_creatures.sql` antes de acessar o mapa com combate.
+Para atualizar um banco criado na versão anterior, execute em ordem e uma única vez `database/migrations/2026_11_26_world_creatures.sql` e `database/migrations/2026_11_26_npcs_quests.sql`.
 
 Consulte `docs/DEPLOY_INFINITYFREE.md`. Nenhum teste com banco real ou publicação InfinityFree foi executado nesta entrega. Nunca publique credenciais reais.
