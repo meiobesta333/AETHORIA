@@ -13,9 +13,16 @@
 - Ataque exige personagem do usuário, criatura cadastrada e adjacência; as linhas são bloqueadas com `FOR UPDATE` durante a transação.
 - O cliente só exibe os resultados retornados pelo servidor.
 
+## NPCs e missões
+- O Ancião Aldren oferece a missão `green_threat` para derrotar o Limo Verde.
+- A missão fica registrada por personagem em `character_quests`.
+- O progresso é atualizado na mesma transação que confirma a derrota da criatura.
+- A recompensa de 35 XP só pode ser reivindicada uma vez, após concluir o objetivo.
+- A interação exige adjacência ortogonal ao NPC e sessão autenticada com CSRF.
+
 ## Atualização de banco
 - Instalação nova: importe `database/schema.sql` e depois `database/seeds/initial.sql`.
-- Banco existente: execute uma vez `database/migrations/2026_11_26_world_creatures.sql`.
+- Banco existente: execute em ordem `database/migrations/2026_11_26_world_creatures.sql` e `database/migrations/2026_11_26_npcs_quests.sql`.
 
 ## Limitações
 Combate é um protótipo PvE de um golpe por requisição, sem contra-ataque, respawn, animação, drops ou balanceamento final. O servidor valida a movimentação ortogonal e bloqueios procedurais; o atlas gráfico e multiplayer em tempo real continuam fora desta etapa.
