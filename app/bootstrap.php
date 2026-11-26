@@ -1,10 +1,101 @@
 <?php
 declare(strict_types=1);
-define('AETHORIA_ROOT',dirname(__DIR__));
-if(!is_file(AETHORIA_ROOT.'/config/app.php')||!is_file(AETHORIA_ROOT.'/config/database.php')){http_response_code(500);exit('AETHORIA ainda não configurado. Consulte README.md.');}
-$appConfig=require AETHORIA_ROOT.'/config/app.php';date_default_timezone_set($appConfig['timezone']??'UTC');session_name($appConfig['session_name']??'AETHORIASESSID');$https=isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!=='off';session_set_cookie_params(['lifetime'=>0,'path'=>'/','secure'=>$https,'httponly'=>true,'samesite'=>'Lax']);if(session_status()!==PHP_SESSION_ACTIVE)session_start();
-require_once AETHORIA_ROOT.'/app/Security.php';require_once AETHORIA_ROOT.'/app/Controllers/AuthController.php';require_once AETHORIA_ROOT.'/app/Controllers/CharacterController.php';require_once AETHORIA_ROOT.'/app/Controllers/QuestController.php';
-function db():PDO{static $pdo=null;if($pdo instanceof PDO)return $pdo;$c=require AETHORIA_ROOT.'/config/database.php';$dsn=sprintf('mysql:host=%s;dbname=%s;charset=%s',$c['host'],$c['database'],$c['charset']??'utf8mb4');return $pdo=new PDO($dsn,$c['username'],$c['password'],[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC,PDO::ATTR_EMULATE_PREPARES=>false]);}
-function e(?string $v):string{return htmlspecialchars($v??'',ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
-function redirect(string $p):never{header('Location: '.$p,true,303);exit;}
-function render(string $title,string $content):void{$u=current_user();?><!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?=e($title)?> · AETHORIA</title><link rel="stylesheet" href="/assets/css/app.css"></head><body><header class="topbar"><a class="brand" href="/">✦ AETHORIA</a><nav><?php if($u):?><a href="/characters">Personagens</a><form method="post" action="/logout" class="inline"><?=csrf_field()?><button class="nav-button">Sair</button></form><?php else:?><a href="/login">Entrar</a><a href="/register">Criar conta</a><?php endif;?></nav></header><main><?=$content?></main><footer>AETHORIA · Um mundo. Milhares de histórias.</footer></body></html><?php}
+
+define('AETHORIA_ROOT', dirname(__DIR__));
+
+if (!is_file(AETHORIA_ROOT . '/config/app.php') || !is_file(AETHORIA_ROOT . '/config/database.php')) {
+    http_response_code(500);
+    exit('AETHORIA ainda não configurado. Consulte README.md.');
+}
+
+$appConfig = require AETHORIA_ROOT . '/config/app.php';
+date_default_timezone_set($appConfig['timezone'] ?? 'UTC');
+session_name($appConfig['session_name'] ?? 'AETHORIASESSID');
+
+$https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'secure' => $https,
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+require_once AETHORIA_ROOT . '/app/Security.php';
+require_once AETHORIA_ROOT . '/app/Controllers/AuthController.php';
+require_once AETHORIA_ROOT . '/app/Controllers/CharacterController.php';
+require_once AETHORIA_ROOT . '/app/Controllers/QuestController.php';
+
+function db(): PDO
+{
+    static $pdo = null;
+    if ($pdo instanceof PDO) {
+        return $pdo;
+    }
+
+    $c = require AETHORIA_ROOT . '/config/database.php';
+    $dsn = sprintf(
+        'mysql:host=%s;dbname=%s;charset=%s',
+        $c['host'],
+        $c['database'],
+        $c['charset'] ?? 'utf8mb4'
+    );
+
+    $pdo = new PDO($dsn, $c['username'], $c['password'], [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ]);
+
+    return $pdo;
+}
+
+function e(?string $v): string
+{
+    return htmlspecialchars($v ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
+function redirect(string $p): never
+{
+    header('Location: ' . $p, true, 303);
+    exit;
+}
+
+function render(string $title, string $content): void
+{
+    $u = current_user();
+    ?>
+    <!doctype html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title><?= e($title) ?> · AETHORIA</title>
+        <link rel="stylesheet" href="/assets/css/app.css">
+    </head>
+    <body>
+        <header class="topbar">
+            <a class="brand" href="/">✦ AETHORIA</a>
+            <nav>
+                <?php if ($u): ?>
+                    <a href="/characters">Personagens</a>
+                    <form method="post" action="/logout" class="inline">
+                        <?= csrf_field() ?>
+                        <button class="nav-button">Sair</button>
+                    </form>
+                <?php else: ?>
+                    <a href="/login">Entrar</a>
+                    <a href="/register">Criar conta</a>
+                <?php endif; ?>
+            </nav>
+        </header>
+        <main><?= $content ?></main>
+        <footer>AETHORIA · Um mundo. Milhares de histórias.</footer>
+    </body>
+    </html>
+    <?php
+}
