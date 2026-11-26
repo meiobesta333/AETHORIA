@@ -1,19 +1,24 @@
 # Estado do mundo jogável — Elarion
 
-## Implementado nesta etapa
-- Mapa isométrico 2:1 desenhado proceduralmente em Canvas 2D, sem dependência de build ou bibliotecas externas.
-- Grade de 18 × 15 células com terreno, caminho central, árvores e rochas.
-- Movimento por WASD, setas e controles direcionais na tela.
-- Bloqueio local de células ocupadas por árvores e rochas.
-- Posição inicial lida da tabela `characters` e persistida em `tile_x` / `tile_y`.
-- Endpoint PHP `POST /game/move`, autenticado, com token CSRF e atualização restrita ao personagem pertencente ao usuário.
-- Layout responsivo básico.
+## Implementado
+- Mapa isométrico 2:1 em Canvas 2D, grade 18 × 15.
+- Terreno procedural, caminho, árvores e rochas.
+- Movimento por WASD, setas e controles na tela.
+- Posição carregada e salva em `characters.tile_x/tile_y`.
+- Endpoint de movimento autenticado com CSRF, validação de passo ortogonal, limites, obstáculos e células ocupadas por criaturas.
+- Três criaturas PvE persistidas em `world_creatures`.
+- Ataque adjacente com dano por vocação, transação SQL e recompensa de XP uma única vez ao derrotar a criatura.
+- O estado de vida dos monstros é compartilhado entre jogadores.
 
-## Limitações conhecidas
-- O mapa é uma demonstração procedural; não usa ainda o atlas conceitual como spritesheet.
-- O servidor valida limites da grade e propriedade do personagem, mas colisões ainda são verificadas no cliente. Antes de PvP ou economia, a movimentação deverá migrar para validação autoritativa no servidor.
-- Não há sincronização multiplayer em tempo real, combate, NPCs ou persistência de mundo compartilhado.
-- Não foi executado teste de integração com PHP/MySQL nem hospedagem InfinityFree nesta alteração.
+## Atualização do banco
+Para instalação nova, importar `database/schema.sql` e depois `database/seeds/initial.sql`.
+Para banco criado na versão anterior, executar uma vez `database/migrations/2026_11_26_world_creatures.sql`.
 
-## Compatibilidade de hospedagem
-A implementação usa PHP, MySQL, sessão, PDO, Canvas 2D e Fetch API. Não exige Node.js, WebSocket, daemon, cron ou processo persistente.
+## Limitações
+- Arte e criaturas são desenhadas proceduralmente; o atlas conceitual ainda não está integrado.
+- Combate é um protótipo: sem contra-ataque, IA, respawn, drops, animações ou balanceamento.
+- Não há multiplayer em tempo real, inventário, missões ou sistemas sociais.
+- Não foram executados testes de integração em PHP/MySQL nem na InfinityFree.
+
+## Compatibilidade
+PHP + MySQL + Canvas 2D + Fetch API. Não exige Node.js, WebSocket, daemon ou cron.
