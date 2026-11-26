@@ -6,7 +6,7 @@ const ctx=canvas.getContext('2d');
 const cfg=window.AETHORIA_WORLD||{};
 const W=18,H=15,TW=64,TH=32,origin={x:480,y:72};
 let player={x:Number(cfg.x??8),y:Number(cfg.y??8)};
-let saving=false,queued=false;
+let saving=false,queued=false;const creatures=(cfg.creatures||[]).map(e=>({...e}));
 const blocked=new Set();
 const trees=[],rocks=[];
 const tile=(x,y)=>({x:origin.x+(x-y)*TW/2,y:origin.y+(x+y)*TH/2});
@@ -40,7 +40,7 @@ function render(){
  for(let x=5;x<12;x++){const p=tile(x,8);diamond(p,'#777b69','#a1a38c');}
  for(let y=5;y<11;y++){const p=tile(8,y);diamond(p,'#777b69','#a1a38c');}
  trees.sort((a,b)=>(a.x+a.y)-(b.x+b.y)).forEach(drawTree);
- rocks.forEach(drawRock);drawPlayer();
+ rocks.forEach(drawRock);creatures.filter(e=>Number(e.health)>0).forEach(e=>{const p=tile(Number(e.tile_x),Number(e.tile_y));ctx.fillStyle='#211614';ctx.beginPath();ctx.ellipse(p.x,p.y+2,12,5,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=e.code==='wolf_young'?'#9b9a82':e.code==='thorn_beetle'?'#a18b4f':'#74a96c';ctx.beginPath();ctx.arc(p.x,p.y-12,10,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f2e7c9';ctx.font='10px sans-serif';ctx.fillText(e.name,p.x,p.y-27);});drawPlayer();
  ctx.fillStyle='#e0d4b3';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText('ELARION · VALE DO AMANHECER',480,28);
 }
 async function persist(){
@@ -55,11 +55,12 @@ async function persist(){
 }
 function move(dx,dy){
  const nx=player.x+dx,ny=player.y+dy;
- if(nx<0||ny<0||nx>=W||ny>=H||blocked.has(key(nx,ny)))return;
+ if(nx<0||ny<0||nx>=W||ny>=H||blocked.has(key(nx,ny))||creatures.some(e=>Number(e.health)>0&&Number(e.tile_x)===nx&&Number(e.tile_y)===ny))return;
  player={x:nx,y:ny};render();const status=document.getElementById('save-status');if(status)status.textContent='Salvando…';persist();
 }
 const keys={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]};
 window.addEventListener('keydown',e=>{const dir=keys[e.key];if(dir){e.preventDefault();move(...dir);}});
+document.querySelectorAll('[data-creature]').forEach(b=>b.addEventListener('click',async()=>{const status=document.getElementById('combat-status');status.textContent='Atacando…';try{const response=await fetch('/game/attack',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':cfg.csrf},body:JSON.stringify({character:Number(cfg.character),creature:Number(b.dataset.creature)})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.message||'Falha no ataque');const enemy=creatures.find(e=>Number(e.id)===Number(b.dataset.creature));if(enemy)enemy.health=data.remaining;b.textContent=data.defeated?'✓ '+data.creature+' derrotado · +'+data.experience+' XP':'⚔ '+data.creature+' · '+data.remaining+' PV';if(data.defeated)b.disabled=true;status.textContent=data.defeated?'Vitória! Você ganhou '+data.experience+' XP.':'Você causou '+data.damage+' de dano.';render();}catch(err){status.textContent=err.message;}}));
 document.querySelectorAll('[data-move]').forEach(b=>b.addEventListener('click',()=>{const [dx,dy]=b.dataset.move.split(',').map(Number);move(dx,dy);}));
 render();
 })();
