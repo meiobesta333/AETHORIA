@@ -1,0 +1,7 @@
+config/app.php
+config/database.php
+.env
+/vendor/
+/node_modules/
+*.log
+*.bak
